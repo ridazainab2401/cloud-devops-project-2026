@@ -21,7 +21,7 @@ resource "aws_s3_bucket" "terraform_state" {
   }
 }
 
-# Network Setup (Keep original resource name: main_vpc)
+# Network Setup 
 resource "aws_vpc" "main_vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
@@ -164,26 +164,27 @@ resource "aws_iam_instance_profile" "app_profile" {
   role = aws_iam_role.app_role.name
 }
 
-# EC2 Instances (Make sure to type the AMI string manually to avoid hidden spaces!)
+# EC2 Instances 
 resource "aws_instance" "bastion" {
-  ami             = "ami-03c1c093c5c9344ab"
-  instance_type   = "t3.micro"
-  subnet_id       = aws_subnet.public_subnet.id
-  security_groups = [aws_security_group.bastion_sg.id]
-  key_name        = var.key_name
-  tags            = { Name = "bastion-host" }
+  ami                    = "ami-03c1c093c5c9344ab"
+  instance_type          = "t3.micro"
+  availability_zone      = "eu-north-1b"
+  subnet_id              = aws_subnet.public_subnet.id
+  vpc_security_group_ids = [aws_security_group.bastion_sg.id] # <-- Changed to vpc_security_group_ids!
+  key_name               = var.key_name
+  tags                   = { Name = "bastion-host" }
 }
 
 resource "aws_instance" "app_server" {
-  ami                  = "ami-03c1c093c5c9344ab"
-  instance_type        = "t3.micro"
-  subnet_id            = aws_subnet.private_subnet.id
-  security_groups      = [aws_security_group.app_sg.id]
-  key_name             = var.key_name
-  iam_instance_profile = aws_iam_instance_profile.app_profile.name
-  tags                 = { Name = "app-server" }
+  ami                    = "ami-03c1c093c5c9344ab"
+  instance_type          = "t3.micro"
+  availability_zone      = "eu-north-1b"
+  subnet_id              = aws_subnet.private_subnet.id
+  vpc_security_group_ids = [aws_security_group.app_sg.id] # <-- Changed to vpc_security_group_ids!
+  key_name               = var.key_name
+  iam_instance_profile   = aws_iam_instance_profile.app_profile.name
+  tags                   = { Name = "app-server" }
 }
-
 # IPs Output
 output "bastion_ip" {
   value = aws_instance.bastion.public_ip
