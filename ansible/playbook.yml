@@ -1,72 +1,13 @@
 ---
 - name: Configure Application Server
   hosts: app_server
-  become: yes 
+  become: yes
   vars_files:
     - secrets.yml
 
-  tasks:
-  
-    - name: Update apt cache and install base packages
-      apt:
-        name:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - software-properties-common
-          - python3-pip
-          - ufw
-        state: present
-        update_cache: yes
-
-   
-    - name: Install Docker
-      apt:
-        name: docker.io
-        state: present
-
-   
-    - name: Download Docker Compose
-      get_url:
-        url: https://github.com/docker/compose/releases/download/v2.24.1/docker-compose-Linux-x86_64
-        dest: /usr/local/bin/docker-compose
-        mode: '0755'
-
-    # Configure Firewall (UFW)
-    - name: Allow SSH traffic
-      ufw:
-        rule: allow
-        port: '22'
-        proto: tcp
-
-    - name: Allow HTTP web traffic
-      ufw:
-        rule: allow
-        port: '80'
-        proto: tcp
-
-    - name: Enable UFW
-      ufw:
-        state: enabled
-
-    #  User Management
-    - name: Create devops user
-      user:
-        name: devops
-        shell: /bin/bash
-        groups: sudo,docker
-        append: yes
-        password: "{{ devops_password }}"
-
-    - name: Disable SSH root login
-      lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '^PermitRootLogin'
-        line: 'PermitRootLogin no'
-      notify: Restart SSH
-
-  handlers:
-    - name: Restart SSH
-      service:
-        name: ssh
-        state: restarted
+  roles:
+    - common
+    - docker
+    - firewall
+    - users
+    - ssh
