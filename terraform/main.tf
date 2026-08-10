@@ -183,6 +183,11 @@ resource "aws_instance" "app_server" {
   vpc_security_group_ids = [aws_security_group.app_sg.id] 
   key_name               = var.key_name
   iam_instance_profile   = aws_iam_instance_profile.app_profile.name
+  root_block_device {
+    volume_size           = 20
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
   tags                   = { Name = "app-server" }
 }
 # IPs Output
