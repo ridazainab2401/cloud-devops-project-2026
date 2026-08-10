@@ -170,7 +170,7 @@ resource "aws_instance" "bastion" {
   instance_type          = "t3.micro"
   availability_zone      = "eu-north-1b"
   subnet_id              = aws_subnet.public_subnet.id
-  vpc_security_group_ids = [aws_security_group.bastion_sg.id] # <-- Changed to vpc_security_group_ids!
+  vpc_security_group_ids = [aws_security_group.bastion_sg.id]
   key_name               = var.key_name
   tags                   = { Name = "bastion-host" }
 }
@@ -180,7 +180,7 @@ resource "aws_instance" "app_server" {
   instance_type          = "t3.micro"
   availability_zone      = "eu-north-1b"
   subnet_id              = aws_subnet.private_subnet.id
-  vpc_security_group_ids = [aws_security_group.app_sg.id] # <-- Changed to vpc_security_group_ids!
+  vpc_security_group_ids = [aws_security_group.app_sg.id] 
   key_name               = var.key_name
   iam_instance_profile   = aws_iam_instance_profile.app_profile.name
   tags                   = { Name = "app-server" }
