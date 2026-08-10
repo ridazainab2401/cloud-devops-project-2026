@@ -16,3 +16,6 @@
 # General OS files
 .DS_Store
 Thumbs.db
+
+# Ignore Ansible secrets
+ansible/secrets.yml

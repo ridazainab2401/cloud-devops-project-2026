@@ -1,0 +1,13 @@
+---
+- name: Configure Application Server
+  hosts: app_server
+  become: yes
+  vars_files:
+    - secrets.yml
+
+  roles:
+    - common
+    - docker
+    - firewall
+    - users
+    - ssh
