@@ -12,7 +12,7 @@ provider "aws" {
   region = "eu-north-1"
 }
 
-# S3 Bucket for State (Keep original resource name: terraform_state)
+# S3 Bucket for State 
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "devops-lab-2026-state-bucket-rida"
   
@@ -30,12 +30,14 @@ resource "aws_vpc" "main_vpc" {
 resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.main_vpc.id
   cidr_block              = "10.0.1.0/24"
+  availability_zone       = "eu-north-1a"
   map_public_ip_on_launch = true
 }
 
 resource "aws_subnet" "private_subnet" {
   vpc_id     = aws_vpc.main_vpc.id
   cidr_block = "10.0.2.0/24"
+  availability_zone = "eu-north-1a"
 }
 
 resource "aws_internet_gateway" "igw" {
@@ -168,7 +170,7 @@ resource "aws_iam_instance_profile" "app_profile" {
 resource "aws_instance" "bastion" {
   ami                    = "ami-03c1c093c5c9344ab"
   instance_type          = "t3.micro"
-  availability_zone      = "eu-north-1b"
+  #availability_zone      = "eu-north-1b"
   subnet_id              = aws_subnet.public_subnet.id
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
   key_name               = var.key_name
@@ -178,7 +180,7 @@ resource "aws_instance" "bastion" {
 resource "aws_instance" "app_server" {
   ami                    = "ami-03c1c093c5c9344ab"
   instance_type          = "t3.micro"
-  availability_zone      = "eu-north-1b"
+  #availability_zone      = "eu-north-1b"
   subnet_id              = aws_subnet.private_subnet.id
   vpc_security_group_ids = [aws_security_group.app_sg.id] 
   key_name               = var.key_name
