@@ -67,7 +67,8 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     environment:
-      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(port)s/grafana/
+      - GF_SERVER_ROOT_URL=http://localhost:8090/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
     volumes:
       - grafana_data:/var/lib/grafana
     restart: always
